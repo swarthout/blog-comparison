@@ -12,14 +12,14 @@ class AuthorsService {
     }
 
     getSingleAuthor(authorId) {
-        var author = this.authors.filter(p => p.id === authorId)[0];
+        var author = this.authors.filter(author => author._id === authorId)[0];
 
         return author || null;
     }
 
     addAuthor(info) {
-        // prevent a bit of bad/duplicate data
-        if (!info || this.authors.filter(p => (p.firstName === info.firstName && p.lastName === info.lastName)).length > 0) {
+        // prevent bad/duplicate data
+        if (!info || this.authors.filter(author => (author.name === info.name)).length > 0) {
             return null;
         }
 
@@ -33,10 +33,7 @@ class AuthorsService {
     updateAuthor(authorId, info) {
         var author = this.getSingleAuthor(authorId);
         if (author) {
-            author.firstName = info.firstName ? info.firstName : author.firstName;
-            author.lastName = info.lastName ? info.lastName : author.lastName;
-            author.displayName = info.displayName ? info.displayName : author.displayName;
-
+            author.name = info.name ? info.name : author.name;
             return true;
         }
         return false;
@@ -44,4 +41,4 @@ class AuthorsService {
 }
 
 var authorService = new AuthorsService();
-export default authorService;
+module.exports = authorService;

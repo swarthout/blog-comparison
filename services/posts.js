@@ -1,0 +1,45 @@
+'use strict';
+
+var uuid = require('node-uuid');
+
+class PostsService {
+    constructor() {
+        this.posts = [];
+    }
+
+    getPosts() {
+        return this.posts;
+    }
+
+    getSinglePost(postId) {
+        var post = this.posts.filter(post => post._id === postId)[0];
+
+        return post || null;
+    }
+
+    addPost(info) {
+        // prevent a bit of bad/duplicate data
+        if (!info || this.posts.filter(post => (post.content === info.content)).length > 0) {
+            return null;
+        }
+
+        info.id = uuid.v4();
+
+        this.posts.push(info);
+
+        return info;
+    }
+
+    updatePost(postId, info) {
+        var post = this.getSinglePost(postId);
+        if (post) {
+            post.content = info.content ? info.content : post.content;
+
+            return true;
+        }
+        return false;
+    }
+}
+
+var postsService = new PostsService();
+module.exports = postsService;

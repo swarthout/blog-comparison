@@ -11,15 +11,22 @@ class CommentsService {
         return this.comments;
     }
 
+    getCommentsbyPost(postId) {
+        return this.comments.filter(comment => comment.postId === postId);
+    }
+
+    getCommentsbyAuthor(authorId) {
+        return this.comments.filter(comment => comment.authorId === authorId);
+    }
     getSingleComment(commentId) {
-        var comment = this.comments.filter(p => p.id === commentId)[0];
+        var comment = this.comments.filter(comment => comment._id === commentId)[0];
 
         return comment || null;
     }
 
     addComment(postId, info) {
-        // prevent a bit of bad/duplicate data
-        if (!info || this.comments.filter(c => (c.postId === info.postId && c.text === info.text)).length > 0) {
+        // prevent bad/duplicate data
+        if (!info || this.comments.filter(comment => (comment.postId === info.postId && comment.content === info.content)).length > 0) {
             return null;
         }
 
@@ -33,7 +40,7 @@ class CommentsService {
     updateComment(commentId, info) {
         var comment = this.getSingleComment(commentId);
         if (comment) {
-            comment.text = info.text ? info.text : comment.text;
+            comment.text = info.content ? info.content : comment.content;
 
             return true;
         }
@@ -42,4 +49,4 @@ class CommentsService {
 }
 
 var commentsService = new CommentsService();
-export default commentsService;
+module.exports = commentsService;

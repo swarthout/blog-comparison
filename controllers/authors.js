@@ -1,8 +1,8 @@
 'use strict';
 
-import AuthorsService from '../services/authors';
+var AuthorsService = require('../services/authors');
 
-export default class AuthorsController {
+class AuthorsController {
     constructor(router) {
         this.router = router;
         this.registerRoutes();
@@ -65,4 +65,4 @@ export default class AuthorsController {
     }
 }
 
-//module.exports = PlayersController;
+module.exports = AuthorsController;

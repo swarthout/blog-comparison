@@ -1,23 +1,16 @@
-import express from 'express';
-//import schema from '/schema/index';
+var express = require('express');
+var schema = require('./schema/index');
 
-import { graphql } from 'graphql';
-import bodyParser from 'body-parser';
+var graphql = require('graphql');
+var graphqlHTTP = require('express-graphql');
+var bodyParser = require('body-parser');
 
 let app = express();
 let PORT = 3000;
 
-// parse POST body as text
-//app.use(bodyParser.text({type: 'application/graphql'}));
 app.use(bodyParser.json());
 
-//app.post('/graphql', (req, res) => {
-//    // execute GraphQL
-//    graphql(schema, req.body)
-//        .then((result) => {
-//            res.send(JSON.stringify(result, null, 2));
-//        });
-//});
+app.use('/graphql', graphqlHTTP({schema: schema, graphiql: true}));
 
 var apiRouter = express.Router();
 app.use('/api', apiRouter);
@@ -31,19 +24,16 @@ apiRouter.use('/comments', commentsRouter);
 var postsRouter = express.Router();
 apiRouter.use('/posts', postsRouter);
 
-import AuthorsController from 'controllers/authors';
+var AuthorsController = require('./controllers/authors');
 var ac = new AuthorsController(authorsRouter);
 
-import CommentsController from 'controllers/comments';
+var CommentsController = require('./controllers/comments');
 var cc = new CommentsController(commentsRouter);
 
-import PostsController from 'controllers/posts';
+var PostsController = require('./controllers/posts');
 var pc = new PostsController(postsRouter);
 
 
 let server = app.listen(PORT, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log('Blog Server listening at http://%s:%s', host, port);
+    console.log('blog running at http://localhost:3000');
 });

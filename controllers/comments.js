@@ -1,8 +1,8 @@
 'use strict';
 
-import CommentsService from '../services/comments';
+var CommentsService = require('../services/comments');
 
-export default class CommentsController {
+class CommentsController {
     constructor(router) {
         this.router = router;
         this.registerRoutes();
@@ -65,4 +65,4 @@ export default class CommentsController {
     }
 }
 
-//module.exports = PlayersController;
+module.exports = CommentsController;

@@ -23,17 +23,18 @@ class AuthorsService {
         return author || null;
     }
 
-    addAuthor(info) {
+    addAuthor(name) {
         // prevent bad/duplicate data
-        if (!info || this.authors.filter(author => (author.name === info.name)).length > 0) {
+        if (!name) {
             return null;
         }
+        var author = {};
+        author.name = name;
+        author.id = uuid.v4();
 
-        info.id = uuid.v4();
+        this.authors.push(author);
 
-        this.authors.push(info);
-
-        return info;
+        return author;
     }
 
     updateAuthor(authorId, info) {

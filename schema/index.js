@@ -158,7 +158,7 @@ const Mutation = new GraphQLObjectType({
             },
             resolve(source, args) {
                 let comment = _.clone(args);
-                if (!PostsService.getSinglePost(postId)) {
+                if (!PostsService.getSinglePost(comment.postId)) {
                     throw new Error("No such post: " + comment.postId);
                 }
                 comment.timestamp = new Date().toString();

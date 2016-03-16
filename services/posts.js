@@ -4,7 +4,16 @@ var uuid = require('node-uuid');
 
 class PostsService {
     constructor() {
-        this.posts = [];
+        this.posts = [
+            {
+                _id: "0",
+                title: "test",
+                category: "other",
+                content: "This is a test",
+                timestamp: null,
+                authorId: "0"
+            }
+        ];
     }
 
     getPosts() {
@@ -23,7 +32,7 @@ class PostsService {
             return null;
         }
 
-        info.id = uuid.v4();
+        info._id = uuid.v4();
 
         this.posts.push(info);
 

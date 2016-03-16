@@ -37,16 +37,7 @@ const Post = new GraphQLObjectType({
         category: {type: Category},
         summary: {type: GraphQLString},
         content: {type: GraphQLString},
-        timestamp: {
-            type: GraphQLFloat,
-            resolve: function (post) {
-                if (post.date) {
-                    return new Date(post.date['$date']).getTime();
-                } else {
-                    return null;
-                }
-            }
-        },
+        timestamp: {type: GraphQLString},
         comments: {
             type: new GraphQLList(Comment),
             args: {
@@ -54,16 +45,16 @@ const Post = new GraphQLObjectType({
             },
             resolve: function (post, {limit}) {
                 if (limit >= 0) {
-                    return CommentsService.getCommentsbyPost(post._id).slice(0, limit);
+                    return CommentsService.getComments(post._id).slice(0, limit);
                 }
 
-                return CommentsService.getCommentsbyPost(post._id);
+                return CommentsService.getComments(post._id);
             }
         },
         author: {
             type: Author,
-            resolve: function ({author}) {
-                return AuthorsService.getSingleAuthor(author._id);
+            resolve: function ({authorId}) {
+                return AuthorsService.getSingleAuthor(authorId);
             }
         }
     })

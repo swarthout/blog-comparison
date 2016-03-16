@@ -4,6 +4,10 @@ var {Post, Category} = require('./post');
 var Comment = require('./comment');
 var Author = require('./author');
 
+var PostsService = require('../services/posts');
+var CommentsService = require("../services/comments");
+var AuthorsService = require('../services/authors');
+
 import {
     GraphQLList,
     GraphQLObjectType,
@@ -27,11 +31,11 @@ const Query = new GraphQLObjectType({
             args: {
                 category: {type: Category}
             },
-            resolve: function (source, {category}) {
+            resolve(source, {category}) {
                 if (category) {
-                    return _.filter(PostsList, post => post.category === category);
+                    return PostsService.getPosts().filter(post => post.category === category);
                 } else {
-                    return PostsList;
+                    return PostsService.getPosts();
                 }
             }
         },
@@ -39,15 +43,15 @@ const Query = new GraphQLObjectType({
         latestPost: {
             type: Post,
             description: "Latest post in the blog",
-            resolve: function () {
-                PostsList.sort((a, b) => {
-                    var bTime = new Date(b.date['$date']).getTime();
-                    var aTime = new Date(a.date['$date']).getTime();
+            resolve() {
+                var posts = PostsService.getPosts().sort((a, b) => {
+                    var bTime = new Date(b.timestamp).getTime();
+                    var aTime = new Date(a.timestamp).getTime();
 
                     return bTime - aTime;
                 });
 
-                return PostsList[0];
+                return posts[0];
             }
         },
 
@@ -57,15 +61,15 @@ const Query = new GraphQLObjectType({
             args: {
                 count: {type: new GraphQLNonNull(GraphQLInt), description: 'Number of recent items'}
             },
-            resolve: function (source, {count}) {
-                PostsList.sort((a, b) => {
-                    var bTime = new Date(b.date['$date']).getTime();
-                    var aTime = new Date(a.date['$date']).getTime();
+            resolve(source, {count}) {
+                var posts = PostsService.getPosts().sort((a, b) => {
+                    var bTime = new Date(b.timestamp).getTime();
+                    var aTime = new Date(a.timestamp).getTime();
 
                     return bTime - aTime;
                 });
 
-                return PostsList.slice(0, count)
+                return posts.slice(0, count);
             }
         },
 
@@ -75,16 +79,16 @@ const Query = new GraphQLObjectType({
             args: {
                 _id: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve: function (source, {_id}) {
-                return _.filter(PostsList, post => post._id === _id)[0];
+            resolve(source, {_id}) {
+                return PostsService.getSinglePost(_id);
             }
         },
 
         authors: {
             type: new GraphQLList(Author),
             description: "Available authors in the blog",
-            resolve: function () {
-                return _.values(AuthorsMap);
+            resolve() {
+                return AuthorsService.getAuthors();
             }
         },
 
@@ -94,8 +98,8 @@ const Query = new GraphQLObjectType({
             args: {
                 _id: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve: function (source, {_id}) {
-                return AuthorsMap[_id];
+            resolve(source, {_id}) {
+                return AuthorsService.getSingleAuthor(_id);
             }
         }
     })
@@ -108,32 +112,26 @@ const Mutation = new GraphQLObjectType({
             type: Post,
             description: "Create a new blog post",
             args: {
-                _id: {type: new GraphQLNonNull(GraphQLString)},
                 title: {type: new GraphQLNonNull(GraphQLString)},
                 content: {type: new GraphQLNonNull(GraphQLString)},
                 summary: {type: GraphQLString},
                 category: {type: Category},
-                author: {type: new GraphQLNonNull(GraphQLString), description: "Id of the author"}
+                authorId: {type: new GraphQLNonNull(GraphQLString), description: "Id of the author"}
             },
-            resolve: function (source, args) {
+            resolve(source, args) {
                 let post = _.clone(args);
-                var alreadyExists = _.findIndex(PostsList, p => p._id === post._id) >= 0;
-                if (alreadyExists) {
-                    throw new Error("Post already exists: " + post._id);
-                }
 
-                if (!AuthorsMap[post.author]) {
-                    throw new Error("No such author: " + post.author);
+                if (!AuthorsService.getSingleAuthor(post.authorId)) {
+                    throw new Error("No such author: " + post.authorId);
                 }
 
                 if (!post.summary) {
                     post.summary = post.content.substring(0, 100);
                 }
 
-                post.comments = [];
-                post.date = {$date: new Date().toString()}
+                post.timestamp = new Date().toString();
 
-                PostsList.push(post);
+                PostsService.addPost(post);
                 return post;
             }
         },
@@ -142,18 +140,30 @@ const Mutation = new GraphQLObjectType({
             type: Author,
             description: "Create a new author",
             args: {
-                _id: {type: new GraphQLNonNull(GraphQLString)},
-                name: {type: new GraphQLNonNull(GraphQLString)},
-                twitterHandle: {type: GraphQLString}
+                name: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve: function (source, args) {
-                let author = _.clone(args);
-                if (AuthorsMap[args._id]) {
-                    throw new Error("Author already exists: " + author._id);
-                }
+            resolve(source, {name}) {
 
-                AuthorsMap[author._id] = author;
-                return author;
+                AuthorsService.addAuthor(name);
+                return name;
+            }
+        },
+        createComment: {
+            type: Comment,
+            description: "Comment on a blog post",
+            args: {
+                postId: {type: new GraphQLNonNull(GraphQLString), description: "Id of the post"},
+                content: {type: new GraphQLNonNull(GraphQLString)},
+                authorId: {type: new GraphQLNonNull(GraphQLString), description: "Id of the author"}
+            },
+            resolve(source, args) {
+                let comment = _.clone(args);
+                if (!PostsService.getSinglePost(postId)) {
+                    throw new Error("No such post: " + comment.postId);
+                }
+                comment.timestamp = new Date().toString();
+                CommentsService.addComment(comment.postId, comment);
+                return comment;
             }
         }
     }

@@ -18,20 +18,22 @@ app.use('/api', apiRouter);
 var authorsRouter = express.Router();
 apiRouter.use('/authors', authorsRouter);
 
-var commentsRouter = express.Router();
-apiRouter.use('/comments', commentsRouter);
-
 var postsRouter = express.Router();
 apiRouter.use('/posts', postsRouter);
+
+var commentsRouter = express.Router({mergeParams: true});
+postsRouter.use('/:postId/comments', commentsRouter);
+
+
 
 var AuthorsController = require('./controllers/authors');
 var ac = new AuthorsController(authorsRouter);
 
-var CommentsController = require('./controllers/comments');
-var cc = new CommentsController(commentsRouter);
-
 var PostsController = require('./controllers/posts');
 var pc = new PostsController(postsRouter);
+
+var CommentsController = require('./controllers/comments');
+var cc = new CommentsController(commentsRouter);
 
 
 let server = app.listen(PORT, function () {

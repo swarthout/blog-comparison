@@ -4,37 +4,34 @@ var uuid = require('node-uuid');
 
 class CommentsService {
     constructor() {
-        this.comments = [];
+        this.comments = [
+            {
+                _id: "0",
+                content: "great post!",
+                authorId: "0",
+                timestamp: null,
+                postId: "0"
+            }
+
+        ];
     }
 
-    getComments() {
-        return this.comments;
-    }
-
-    getCommentsbyPost(postId) {
+    getComments(postId) {
         return this.comments.filter(comment => comment.postId === postId);
     }
 
-    getCommentsbyAuthor(authorId) {
-        return this.comments.filter(comment => comment.authorId === authorId);
-    }
     getSingleComment(commentId) {
         var comment = this.comments.filter(comment => comment._id === commentId)[0];
 
         return comment || null;
     }
 
-    addComment(postId, info) {
-        // prevent bad/duplicate data
-        if (!info || this.comments.filter(comment => (comment.postId === info.postId && comment.content === info.content)).length > 0) {
-            return null;
-        }
+    addComment(postId, comment) {
+        comment._id = uuid.v4();
 
-        info.id = uuid.v4();
+        this.comments.push(comment);
 
-        this.comments.push(info);
-
-        return info;
+        return comment;
     }
 
     updateComment(commentId, info) {

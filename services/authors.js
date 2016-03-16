@@ -4,7 +4,13 @@ var uuid = require('node-uuid');
 
 class AuthorsService {
     constructor() {
-        this.authors = [];
+        this.authors = [
+            {
+                _id: "0",
+                name: "Scott"
+            }
+
+        ];
     }
 
     getAuthors() {

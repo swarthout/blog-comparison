@@ -10,42 +10,40 @@ class CommentsController {
 
     registerRoutes() {
         this.router.get('/', this.getComments.bind(this));
-        this.router.get('/:id', this.getSingleComment.bind(this));
+        this.router.get('/:commentId', this.getSingleComment.bind(this));
         this.router.post('/', this.postComment.bind(this));
-        this.router.put('/:id', this.putComment.bind(this));
+        this.router.put('/:commentId', this.putComment.bind(this));
     }
 
     getComments(req, res) {
-        var players = CommentsService.getComments();
-        res.send(players);
+        var postId = req.params.postId;
+        var comments = CommentsService.getComments(postId);
+        res.send(comments);
     }
 
     getSingleComment(req, res) {
-        var id = req.params.id;
-        var player = CommentsService.getSingleComment(id);
+        var commentId = req.params.commentId;
+        var comment = CommentsService.getSingleComment(commentId);
 
-        if (!player) {
+        if (!comment) {
             res.sendStatus(404);
         } else {
-            res.send(player);
+            res.send(comment);
         }
     }
 
     putComment(req, res) {
-        var id = req.params.id;
-        var existingComment = CommentsService.getSingleComment(id);
-
+        var commentId = req.params.commentId;
+        var existingComment = CommentsService.getSingleComment(commentId);
+        let commentInfo = req.body;
         if (!existingComment) {
-            let commentInfo = req.body;
-            commentInfo.id = id;
             if (CommentsService.addComment(commentInfo)) {
-                res.setHeader('Location', '/comments/' + id);
                 res.sendStatus(201);
             } else {
                 res.sendStatus(500);
             }
         } else {
-            if (CommentsService.updateComment(id, req.body)) {
+            if (CommentsService.updateComment(commentId, commentInfo)) {
                 res.sendStatus(204);
             } else {
                 res.sendStatus(404);
@@ -55,9 +53,8 @@ class CommentsController {
 
     postComment(req, res) {
         var commentInfo = req.body;
-
-        if (CommentsService.addComment(commentInfo)) {
-            res.setHeader('Location', '/comments/' + commentInfo.id);
+        var postId = req.params.postId;
+        if (CommentsService.addComment(postId, commentInfo)) {
             res.sendStatus(200);
         } else {
             res.sendStatus(500);

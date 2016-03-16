@@ -21,11 +21,11 @@ const Comment = new GraphQLObjectType({
         content: {type: GraphQLString},
         author: {
             type: Author,
-            resolve: function ({author}) {
-                return AuthorsService.getSingleAuthor(author._id);
+            resolve({authorId}) {
+                return AuthorsService.getSingleAuthor(authorId);
             }
         },
-        timestamp: {type: GraphQLFloat}
+        timestamp: {type: GraphQLString}
     })
 });
 

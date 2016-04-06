@@ -1,4 +1,5 @@
-import * as _ from 'underscore';
+import {clone} from "underscore";
+import {GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLNonNull} from "graphql";
 
 var {Post, Category} = require('./post');
 var Comment = require('./comment');
@@ -7,18 +8,6 @@ var Author = require('./author');
 var PostsService = require('../services/posts');
 var CommentsService = require("../services/comments");
 var AuthorsService = require('../services/authors');
-
-import {
-    GraphQLList,
-    GraphQLObjectType,
-    GraphQLSchema,
-    GraphQLString,
-    GraphQLInt,
-    GraphQLFloat,
-    GraphQLEnumType,
-    GraphQLNonNull,
-    GraphQLInterfaceType
-} from 'graphql';
 
 
 const Query = new GraphQLObjectType({
@@ -31,7 +20,7 @@ const Query = new GraphQLObjectType({
             args: {
                 category: {type: Category}
             },
-            resolve(source, {category}) {
+            resolve(_, {category}) {
                 if (category) {
                     return PostsService.getPosts().filter(post => post.category === category);
                 } else {
@@ -61,7 +50,7 @@ const Query = new GraphQLObjectType({
             args: {
                 count: {type: new GraphQLNonNull(GraphQLInt), description: 'Number of recent items'}
             },
-            resolve(source, {count}) {
+            resolve(_, {count}) {
                 var posts = PostsService.getPosts().sort((a, b) => {
                     var bTime = new Date(b.timestamp).getTime();
                     var aTime = new Date(a.timestamp).getTime();
@@ -79,7 +68,7 @@ const Query = new GraphQLObjectType({
             args: {
                 _id: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve(source, {_id}) {
+            resolve(_, {_id}) {
                 return PostsService.getSinglePost(_id);
             }
         },
@@ -98,7 +87,7 @@ const Query = new GraphQLObjectType({
             args: {
                 _id: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve(source, {_id}) {
+            resolve(_, {_id}) {
                 return AuthorsService.getSingleAuthor(_id);
             }
         }
@@ -118,8 +107,8 @@ const Mutation = new GraphQLObjectType({
                 category: {type: Category},
                 authorId: {type: new GraphQLNonNull(GraphQLString), description: "Id of the author"}
             },
-            resolve(source, args) {
-                let post = _.clone(args);
+            resolve(_, args) {
+                let post = clone(args);
 
                 if (!AuthorsService.getSingleAuthor(post.authorId)) {
                     throw new Error("No such author: " + post.authorId);
@@ -142,7 +131,7 @@ const Mutation = new GraphQLObjectType({
             args: {
                 name: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve(source, {name}) {
+            resolve(_, {name}) {
 
                 AuthorsService.addAuthor(name);
                 return name;
@@ -156,8 +145,8 @@ const Mutation = new GraphQLObjectType({
                 content: {type: new GraphQLNonNull(GraphQLString)},
                 authorId: {type: new GraphQLNonNull(GraphQLString), description: "Id of the author"}
             },
-            resolve(source, args) {
-                let comment = _.clone(args);
+            resolve(_, args) {
+                let comment = clone(args);
                 if (!PostsService.getSinglePost(comment.postId)) {
                     throw new Error("No such post: " + comment.postId);
                 }

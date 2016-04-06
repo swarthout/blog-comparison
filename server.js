@@ -37,5 +37,5 @@ var cc = new CommentsController(commentsRouter);
 
 
 let server = app.listen(PORT, function () {
-    console.log('blog running at http://localhost:3000');
+    console.log(`blog running at http://localhost:${PORT}`);
 });

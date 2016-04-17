@@ -1,6 +1,6 @@
 'use strict';
 
-var PostsService = require('../services/posts');
+import PostsService from "../services/posts";
 
 class PostsController {
     constructor(router) {

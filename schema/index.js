@@ -1,13 +1,11 @@
 import {clone} from "underscore";
 import {GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLNonNull} from "graphql";
-
-var {Post, Category} = require('./post');
-var Comment = require('./comment');
-var Author = require('./author');
-
-var PostsService = require('../services/posts');
-var CommentsService = require("../services/comments");
-var AuthorsService = require('../services/authors');
+import {Post, Category} from "./post";
+import Comment from "./comment";
+import Author from "./author";
+import PostsService from "../services/posts";
+import CommentsService from "../services/comments";
+import AuthorsService from "../services/authors";
 
 
 const Query = new GraphQLObjectType({

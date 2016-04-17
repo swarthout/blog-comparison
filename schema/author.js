@@ -1,14 +1,4 @@
-import {
-    GraphQLList,
-    GraphQLObjectType,
-    GraphQLSchema,
-    GraphQLString,
-    GraphQLInt,
-    GraphQLFloat,
-    GraphQLEnumType,
-    GraphQLNonNull,
-    GraphQLInterfaceType
-} from 'graphql';
+import {GraphQLObjectType, GraphQLString} from "graphql";
 
 const Author = new GraphQLObjectType({
     name: "Author",

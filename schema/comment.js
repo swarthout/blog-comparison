@@ -1,17 +1,6 @@
-import {
-    GraphQLList,
-    GraphQLObjectType,
-    GraphQLSchema,
-    GraphQLString,
-    GraphQLInt,
-    GraphQLFloat,
-    GraphQLEnumType,
-    GraphQLNonNull,
-    GraphQLInterfaceType
-} from 'graphql';
-
-var AuthorsService = require('../services/authors');
-var Author = require('./author');
+import {GraphQLObjectType, GraphQLString} from "graphql";
+import AuthorsService from "../services/authors";
+import Author from "./author";
 
 const Comment = new GraphQLObjectType({
     name: "Comment",

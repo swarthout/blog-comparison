@@ -1,6 +1,6 @@
 'use strict';
 
-var CommentsService = require('../services/comments');
+import CommentsService from "../services/comments";
 
 class CommentsController {
     constructor(router) {

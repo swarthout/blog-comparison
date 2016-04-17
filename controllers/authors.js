@@ -1,6 +1,6 @@
 'use strict';
 
-var AuthorsService = require('../services/authors');
+import AuthorsService from "../services/authors";
 
 class AuthorsController {
     constructor(router) {

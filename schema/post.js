@@ -1,21 +1,8 @@
-import {
-    GraphQLList,
-    GraphQLObjectType,
-    GraphQLSchema,
-    GraphQLString,
-    GraphQLInt,
-    GraphQLFloat,
-    GraphQLEnumType,
-    GraphQLNonNull,
-    GraphQLInterfaceType
-} from 'graphql';
-
-var PostsService = require('../services/posts');
-var CommentsService = require('../services/comments');
-var AuthorsService = require('../services/authors');
-
-var Author = require('./author');
-var Comment = require('./comment');
+import {GraphQLList, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLEnumType} from "graphql";
+import CommentsService from "../services/comments";
+import AuthorsService from "../services/authors";
+import Author from "./author";
+import Comment from "./comment";
 
 const Category = new GraphQLEnumType({
     name: "Category",

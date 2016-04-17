@@ -1,6 +1,6 @@
 'use strict';
 
-var uuid = require('node-uuid');
+import uuid from "node-uuid";
 
 class AuthorsService {
     constructor() {

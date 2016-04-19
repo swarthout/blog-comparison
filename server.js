@@ -5,9 +5,8 @@ import bodyParser from "body-parser";
 import AuthorsController from "./controllers/authors";
 import PostsController from "./controllers/posts";
 import CommentsController from "./controllers/comments";
-
 let app = express();
-let PORT = 3000;
+let PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 

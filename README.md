@@ -3,6 +3,7 @@ GraphQL and REST Comparison
 
 I first discovered GraphQL about three months ago when I was browsing Hacker News. I thought it was a pretty interesting technology. I built this project as a way of comparing a traditional REST style API with GraphQL to see their similarities, differences, and the key advantages that using GraphQL affords a developer.
 
+####Intuitive Queries ####
 The main advantage of using GraphQL is it lets the developer query for data in a intuitive way, where the query response is almost identical to the query sent to the server. In a traditional REST workflow, if a developer using this demo application wanted to get a list of blog posts, with the title of the post, the authors name, and the list of comments for each post, with the comment and the commenters name for each comment. To get all of this information through the REST endpoints, one must do the following:
   1. Send a GET request to /posts/ to get a list of every post
   2. For each post, parse the response to find the id of the author
@@ -77,3 +78,22 @@ Which would give a response like
     }
 
 The "shape" of the response is almost exactly the same as the "shape" of the query, and even though all of this data is normalized, only one request is needed to get all of the information. Also, if my needs change (like I need that timestamp on the comments), I can just modify my query to reflect my needs. There is a more intuitive mental model with GraphQL, that while can be imitated with traditional REST endpoints with query parameters and multiple responses, comes for free with GraphQL.
+
+#### Disadvantages ####
+
+While GraphQL is great technology, it doesn't always make sense to replace REST with GrapQL. There are a number of applications where REST APIs provide a better value than GraphQL APIs. A few of these applications are:
+1. External APIs - Since GraphQL servers require a special syntax that most app developers are not familiar with using, it would be difficult to promote usage of a GraphQL API for your external, public facing API. However, there is no reason why you could not use GraphQL internally, and then set up additional endpoints that serve a specific GrapQL query. For example, A RESTful route /posts/ could correspond to the GraphQL query shown above.
+2. Large Existing APIs - Since GraphQL requires its own type system declarations and must be hooked up to query resolvers manually, it can be quite daunting to convert a large REST API to GraphQl. However, GraphQL is incrementally adoptable and GraphQL resolve functions can query existing REST endpoints. For example, instead of using JavaScript service methods in the query resolvers, it is perfectly reasonable to do something like:
+
+        import rp from 'request-promise';
+        // inside GraphQL Schema definition
+        posts: {
+            type: new GraphQLList(Post),
+            description: "List of posts in the blog",
+            resolve() {
+                return rp("http://localhost:3000/api/posts/").then(posts => posts);
+            }
+        }
+
+#### Conclusion ####
+In conclusion, I found this exploration of GraphQL very informative and I look forward to using the technology more in the future. It is going to be hard to go back to a world without such easy queries and such helpful developer tools. I look forward to the future of GraphQL and its eventual widespread adoption.

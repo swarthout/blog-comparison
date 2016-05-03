@@ -3,7 +3,7 @@ GraphQL and REST Comparison
 
 I first discovered GraphQL about three months ago when I was browsing Hacker News. I thought it was a pretty interesting technology. I built this project as a way of comparing a traditional REST style API with GraphQL to see their similarities, differences, and the key advantages that using GraphQL affords a developer.
 
-####Intuitive Queries ####
+#### Intuitive Queries ####
 The main advantage of using GraphQL is it lets the developer query for data in a intuitive way, where the query response is almost identical to the query sent to the server. In a traditional REST workflow, if a developer using this demo application wanted to get a list of blog posts, with the title of the post, the authors name, and the list of comments for each post, with the comment and the commenters name for each comment. To get all of this information through the REST endpoints, one must do the following:
   1. Send a GET request to /posts/ to get a list of every post
   2. For each post, parse the response to find the id of the author
@@ -77,7 +77,7 @@ Which would give a response like
       }
     }
 
-The "shape" of the response is almost exactly the same as the "shape" of the query, and even though all of this data is normalized, only one request is needed to get all of the information. Also, if my needs change (like I need that timestamp on the comments), I can just modify my query to reflect my needs. There is a more intuitive mental model with GraphQL, that while can be imitated with traditional REST endpoints with query parameters and multiple responses, comes for free with GraphQL.
+The "shape" of the response is almost exactly the same as the "shape" of the query, and even though all of this data is normalized, only one request is needed to get all of the information. Also, if my needs change (like I need that timestamp on the comments), I can just modify my query to reflect my needs. There is a more intuitive mental model with GraphQL, that while all of these features can be imitated with traditional REST endpoints with query parameters and multiple responses, all of this comes with GraphQL out of the box.
 
 #### Disadvantages ####
 
